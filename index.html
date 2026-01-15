@@ -3,175 +3,371 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>计算器</title>
+    <title>AI代码转换器 - 简易HTML生成工具</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "微软雅黑", sans-serif;
         }
-        /* 页面居中 */
+        
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
         }
-        /* 计算器容器 */
-        .calculator {
-            width: 320px;
-            background-color: #ffffff;
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
             padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        /* 显示屏幕 */
-        .calc-screen {
-            width: 100%;
-            height: 80px;
-            border: none;
-            background-color: #f9f9f9;
+            background-color: white;
             border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
             margin-bottom: 20px;
-            padding: 15px 20px;
-            font-size: 28px;
-            text-align: right;
-            outline: none;
-            color: #333;
-            overflow: hidden;
-            white-space: nowrap;
+            font-size: 24px;
         }
-        /* 按钮网格布局 */
-        .calc-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        
+        .intro {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
-        /* 所有按钮通用样式 */
-        button {
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        h2 {
+            font-size: 18px;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+        
+        textarea {
             width: 100%;
-            height: 60px;
+            height: 300px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 20px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            font-size: 14px;
+            transition: background-color 0.3s;
         }
-        /* 鼠标悬浮效果 */
+        
         button:hover {
-            opacity: 0.9;
+            background-color: #2980b9;
         }
-        /* 点击按压效果 */
-        button:active {
-            transform: scale(0.98);
+        
+        button.secondary {
+            background-color: #95a5a6;
         }
-        /* 功能按钮-灰色 */
-        .btn-func {
-            background-color: #e0e0e0;
-            color: #333;
+        
+        button.secondary:hover {
+            background-color: #7f8c8d;
         }
-        /* 运算符按钮-橙色高亮 */
-        .btn-op {
-            background-color: #ff9500;
-            color: #fff;
+        
+        button.success {
+            background-color: #27ae60;
         }
-        /* 数字和小数点按钮-浅灰 */
-        .btn-num {
-            background-color: #f0f0f0;
-            color: #333;
+        
+        button.success:hover {
+            background-color: #229954;
         }
-        /* 等号按钮-深橙色 */
-        .btn-equal {
-            background-color: #ff6d00;
-            color: #fff;
+        
+        .result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+        
+        .status {
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status.warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .check-list {
+            list-style-type: none;
+            margin-left: 20px;
+        }
+        
+        .check-list li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .check-list li::before {
+            content: "▪ ";
+            color: #3498db;
+        }
+        
+        .filename-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-right: 10px;
+            width: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .filename-input {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <!-- 计算器显示区域 -->
-        <div class="calc-screen" id="screen">0</div>
-        <!-- 计算器按钮区域 -->
-        <div class="calc-buttons">
-            <button class="btn-func" data-val="AC">AC</button>
-            <button class="btn-func" data-val="DEL">DEL</button>
-            <button class="btn-op" data-val="/">÷</button>
-            <button class="btn-op" data-val="*">×</button>
-
-            <button class="btn-num" data-val="7">7</button>
-            <button class="btn-num" data-val="8">8</button>
-            <button class="btn-num" data-val="9">9</button>
-            <button class="btn-op" data-val="-">-</button>
-
-            <button class="btn-num" data-val="4">4</button>
-            <button class="btn-num" data-val="5">5</button>
-            <button class="btn-num" data-val="6">6</button>
-            <button class="btn-op" data-val="+">+</button>
-
-            <button class="btn-num" data-val="1">1</button>
-            <button class="btn-num" data-val="2">2</button>
-            <button class="btn-num" data-val="3">3</button>
-            <button class="btn-equal" data-val="=">=</button>
-
-            <button class="btn-num" data-val="0">0</button>
-            <button class="btn-num" data-val=".">.</button>
+    <div class="container">
+        <h1>AI代码转换器</h1>
+        
+        <div class="intro">
+            <p>这是一个简易的AI代码转换工具，帮助您将AI生成的HTML/CSS/JS代码转换为可运行的HTML文件。</p>
+            <p>使用方法：</p>
+            <ol>
+                <li>将AI生成的完整代码粘贴到下方输入框中</li>
+                <li>点击"检查代码完整性"按钮验证代码</li>
+                <li>输入文件名，点击"生成HTML文件"下载</li>
+                <li>双击下载的HTML文件即可在浏览器中运行</li>
+            </ol>
+        </div>
+        
+        <div class="section">
+            <h2>1. 粘贴AI生成的代码</h2>
+            <textarea id="codeInput" placeholder="请将AI生成的完整HTML/CSS/JS代码粘贴到这里..."></textarea>
+        </div>
+        
+        <div class="section">
+            <h2>2. 检查与生成</h2>
+            <div class="button-group">
+                <button onclick="checkCode()">检查代码完整性</button>
+                <button onclick="clearCode()" class="secondary">清空输入</button>
+            </div>
+            
+            <div id="checkResult" class="result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>3. 生成HTML文件</h2>
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                <label for="filename">文件名：</label>
+                <input type="text" id="filename" class="filename-input" placeholder="例如：my-app" value="my-ai-app">
+                <button onclick="generateHTML()" class="success">生成HTML文件</button>
+            </div>
+            
+            <div id="generateResult" class="result"></div>
         </div>
     </div>
-
+    
     <script>
-        // 获取显示屏幕和所有按钮
-        const screen = document.getElementById('screen');
-        const buttons = document.querySelectorAll('button');
-        // 存储计算表达式
-        let currentValue = '';
-
-        // 给每个按钮绑定点击事件
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const val = btn.getAttribute('data-val');
-                handleBtnClick(val);
-            });
-        });
-
-        // 核心计算逻辑处理
-        function handleBtnClick(val) {
-            // 1. 清空按钮 AC
-            if (val === 'AC') {
-                currentValue = '';
-                screen.textContent = '0';
+        // 代码完整性检查
+        function checkCode() {
+            const code = document.getElementById('codeInput').value;
+            const resultDiv = document.getElementById('checkResult');
+            
+            if (!code.trim()) {
+                resultDiv.innerHTML = '<div class="status error">错误：请先粘贴AI生成的代码</div>';
                 return;
             }
-
-            // 2. 删除按钮 DEL - 删除最后一个字符
-            if (val === 'DEL') {
-                currentValue = currentValue.slice(0, -1);
-                screen.textContent = currentValue || '0';
-                return;
+            
+            let checks = [];
+            let hasErrors = false;
+            
+            // 检查基本HTML结构
+            if (code.includes('<html') && code.includes('</html>')) {
+                checks.push('✅ HTML 根标签完整');
+            } else {
+                checks.push('❌ 缺少 HTML 根标签');
+                hasErrors = true;
             }
-
-            // 3. 等号按钮 = - 执行计算
-            if (val === '=') {
-                try {
-                    // 处理乘法符号兼容 eval，把 × 替换成 *
-                    let calcStr = currentValue.replace(/×/g, '*');
-                    // 执行计算，保留合理小数位，避免超长小数
-                    let result = eval(calcStr);
-                    result = Number.isInteger(result) ? result : result.toFixed(6);
-                    screen.textContent = result;
-                    currentValue = result.toString();
-                } catch (error) {
-                    // 处理计算异常（比如除0、表达式错误）
-                    screen.textContent = '计算错误';
-                    currentValue = '';
+            
+            if (code.includes('<head') && code.includes('</head>')) {
+                checks.push('✅ Head 标签完整');
+            } else {
+                checks.push('⚠️ 缺少 Head 标签（可选）');
+            }
+            
+            if (code.includes('<body') && code.includes('</body>')) {
+                checks.push('✅ Body 标签完整');
+            } else {
+                checks.push('❌ 缺少 Body 标签');
+                hasErrors = true;
+            }
+            
+            // 检查HTML声明
+            if (code.trim().startsWith('<!DOCTYPE html>')) {
+                checks.push('✅ 包含 HTML5 文档声明');
+            } else {
+                checks.push('⚠️ 缺少 HTML5 文档声明（建议添加）');
+            }
+            
+            // 检查CSS和JS（可选）
+            if (code.includes('<style') || code.includes('.css') || code.includes('style=')) {
+                checks.push('✅ 包含 CSS 样式');
+            } else {
+                checks.push('⚠️ 未检测到 CSS 样式（可选）');
+            }
+            
+            if (code.includes('<script') || code.includes('.js')) {
+                checks.push('✅ 包含 JavaScript 代码');
+            } else {
+                checks.push('⚠️ 未检测到 JavaScript 代码（可选）');
+            }
+            
+            // 检查语法完整性
+            let openTags = [];
+            const tagRegex = /<\/?([a-zA-Z][a-zA-Z0-9]*)/g;
+            let match;
+            
+            while ((match = tagRegex.exec(code)) !== null) {
+                const tag = match[1].toLowerCase();
+                const isClosing = match[0].startsWith('</');
+                
+                if (isClosing) {
+                    if (openTags.length === 0 || openTags[openTags.length - 1] !== tag) {
+                        checks.push(`⚠️ 标签 <${tag}> 可能未正确闭合`);
+                    } else {
+                        openTags.pop();
+                    }
+                } else {
+                    // 忽略自闭合标签
+                    const selfClosingTags = ['img', 'br', 'hr', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'source', 'track', 'wbr'];
+                    if (!selfClosingTags.includes(tag)) {
+                        openTags.push(tag);
+                    }
                 }
+            }
+            
+            if (openTags.length > 0) {
+                checks.push(`⚠️ 以下标签未闭合：${openTags.map(tag => `<${tag}>`).join(', ')}`);
+            }
+            
+            // 显示检查结果
+            let statusClass = hasErrors ? 'error' : 'success';
+            let statusText = hasErrors ? '代码存在错误，建议修复后再生成文件' : '代码检查通过，可以生成HTML文件';
+            
+            resultDiv.innerHTML = `
+                <div class="status ${statusClass}">${statusText}</div>
+                <ul class="check-list">
+                    ${checks.map(check => `<li>${check}</li>`).join('')}
+                </ul>
+            `;
+        }
+        
+        // 清空输入
+        function clearCode() {
+            document.getElementById('codeInput').value = '';
+            document.getElementById('checkResult').innerHTML = '';
+            document.getElementById('generateResult').innerHTML = '';
+        }
+        
+        // 生成HTML文件
+        function generateHTML() {
+            const code = document.getElementById('codeInput').value;
+            const filename = document.getElementById('filename').value;
+            const resultDiv = document.getElementById('generateResult');
+            
+            if (!code.trim()) {
+                resultDiv.innerHTML = '<div class="status error">错误：请先粘贴AI生成的代码</div>';
                 return;
             }
-
-            // 4. 普通按键：数字、运算符、小数点 拼接表达式
-            currentValue += val;
-            screen.textContent = currentValue;
+            
+            if (!filename.trim()) {
+                resultDiv.innerHTML = '<div class="status error">错误：请输入文件名</div>';
+                return;
+            }
+            
+            // 确保文件名以.html结尾
+            let finalFilename = filename.trim();
+            if (!finalFilename.endsWith('.html')) {
+                finalFilename += '.html';
+            }
+            
+            // 创建Blob对象
+            const blob = new Blob([code], { type: 'text/html' });
+            
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = finalFilename;
+            
+            // 模拟点击下载
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // 显示结果
+            resultDiv.innerHTML = `
+                <div class="status success">成功！HTML文件已生成</div>
+                <p>文件名：${finalFilename}</p>
+                <p>文件已下载到您的默认下载文件夹。</p>
+                <p>使用方法：</p>
+                <ul class="check-list">
+                    <li>在文件管理器中找到下载的HTML文件</li>
+                    <li>双击文件即可在浏览器中运行</li>
+                    <li>或右键点击文件，选择"打开方式"，然后选择您的浏览器</li>
+                </ul>
+            `;
         }
     </script>
 </body>
