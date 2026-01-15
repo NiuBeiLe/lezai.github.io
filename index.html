@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", sans-serif;
+        }
+        /* 页面居中 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        /* 计算器容器 */
+        .calculator {
+            width: 320px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        /* 显示屏幕 */
+        .calc-screen {
+            width: 100%;
+            height: 80px;
+            border: none;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            font-size: 28px;
+            text-align: right;
+            outline: none;
+            color: #333;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        /* 按钮网格布局 */
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        /* 所有按钮通用样式 */
+        button {
+            width: 100%;
+            height: 60px;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        /* 鼠标悬浮效果 */
+        button:hover {
+            opacity: 0.9;
+        }
+        /* 点击按压效果 */
+        button:active {
+            transform: scale(0.98);
+        }
+        /* 功能按钮-灰色 */
+        .btn-func {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        /* 运算符按钮-橙色高亮 */
+        .btn-op {
+            background-color: #ff9500;
+            color: #fff;
+        }
+        /* 数字和小数点按钮-浅灰 */
+        .btn-num {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        /* 等号按钮-深橙色 */
+        .btn-equal {
+            background-color: #ff6d00;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <!-- 计算器显示区域 -->
+        <div class="calc-screen" id="screen">0</div>
+        <!-- 计算器按钮区域 -->
+        <div class="calc-buttons">
+            <button class="btn-func" data-val="AC">AC</button>
+            <button class="btn-func" data-val="DEL">DEL</button>
+            <button class="btn-op" data-val="/">÷</button>
+            <button class="btn-op" data-val="*">×</button>
+
+            <button class="btn-num" data-val="7">7</button>
+            <button class="btn-num" data-val="8">8</button>
+            <button class="btn-num" data-val="9">9</button>
+            <button class="btn-op" data-val="-">-</button>
+
+            <button class="btn-num" data-val="4">4</button>
+            <button class="btn-num" data-val="5">5</button>
+            <button class="btn-num" data-val="6">6</button>
+            <button class="btn-op" data-val="+">+</button>
+
+            <button class="btn-num" data-val="1">1</button>
+            <button class="btn-num" data-val="2">2</button>
+            <button class="btn-num" data-val="3">3</button>
+            <button class="btn-equal" data-val="=">=</button>
+
+            <button class="btn-num" data-val="0">0</button>
+            <button class="btn-num" data-val=".">.</button>
+        </div>
+    </div>
+
+    <script>
+        // 获取显示屏幕和所有按钮
+        const screen = document.getElementById('screen');
+        const buttons = document.querySelectorAll('button');
+        // 存储计算表达式
+        let currentValue = '';
+
+        // 给每个按钮绑定点击事件
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = btn.getAttribute('data-val');
+                handleBtnClick(val);
+            });
+        });
+
+        // 核心计算逻辑处理
+        function handleBtnClick(val) {
+            // 1. 清空按钮 AC
+            if (val === 'AC') {
+                currentValue = '';
+                screen.textContent = '0';
+                return;
+            }
+
+            // 2. 删除按钮 DEL - 删除最后一个字符
+            if (val === 'DEL') {
+                currentValue = currentValue.slice(0, -1);
+                screen.textContent = currentValue || '0';
+                return;
+            }
+
+            // 3. 等号按钮 = - 执行计算
+            if (val === '=') {
+                try {
+                    // 处理乘法符号兼容 eval，把 × 替换成 *
+                    let calcStr = currentValue.replace(/×/g, '*');
+                    // 执行计算，保留合理小数位，避免超长小数
+                    let result = eval(calcStr);
+                    result = Number.isInteger(result) ? result : result.toFixed(6);
+                    screen.textContent = result;
+                    currentValue = result.toString();
+                } catch (error) {
+                    // 处理计算异常（比如除0、表达式错误）
+                    screen.textContent = '计算错误';
+                    currentValue = '';
+                }
+                return;
+            }
+
+            // 4. 普通按键：数字、运算符、小数点 拼接表达式
+            currentValue += val;
+            screen.textContent = currentValue;
+        }
+    </script>
+</body>
+</html>
